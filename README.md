@@ -1,9 +1,11 @@
 # Tryp Image Prep
 ImageJ macros assisting trypanosomatid cell microscopy image prep.
 
+**Quickstart**: Download [tryp_cell_image_prep.ijm](https://github.com/zephyris/trypimageprep/blob/main/tryp_cell_image_prep.ijm?raw=true) and install in ImageJ, then look for the new entries in the `Macros` menu.
+
 ## Overall workflow
 
-Install the macros using `Plugins > Macros > Install...` and select `tryp_image_prep.ijm` in the file selection dialog. Individual tools will then appear in the `Plugins > Macros` menu.
+Install the macros using `Plugins > Macros > Install...` and select `tryp_cell_image_prep.ijm` in the file selection dialog. Individual tools will then appear in the `Plugins > Macros` menu.
 
 Open your microscope image. Use the `Cell Cropper` tool to crop cells from the image. Save all the cropped cell images you would like to keep as TIFF files in a directory, using `File > Save As > Tiff...`, or just use `Save and Close All`. You can make nice composites for all files in the directory using `Make Composites From Directory` – the output composites are saved as PNG files in the same directory.
 
