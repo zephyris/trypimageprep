@@ -130,7 +130,7 @@ macro "Cell Cropper Settings" {
 macro "---- [does something to the current image] ----" {
 }
 
-//Flip vertically
+//Flip Vertically
 macro "Flip vertically [v]" {
 	seltype="none";
 	if (selectionType()==0) {
@@ -172,7 +172,7 @@ macro "Flip vertically [v]" {
 	}
 }
 
-//Single image quick contrast
+//Single Image Quick Contrast
 macro "Single image quick contrast" {
 	singleQuickContrast();
 }
@@ -186,6 +186,21 @@ function fluorescenceAutocontrast() {
 	run("Enhance Contrast", "saturated=0.01");
 	getMinAndMax(cmin, cmax);
 	setMinAndMax(mean, cmax);
+}
+
+function fluorescenceAutocontrastMode() {
+	getRawStatistics(area, mean, min, max, stdev, histo);
+	maxh=0;
+	maxi=0;
+	for (i=0; i<lengthOf(histo); i++) {
+		if (histo[i]>maxh) {
+			maxh=histo[i];
+			maxi=i;
+		}
+}
+	run("Enhance Contrast", "saturated=0.01");
+	getMinAndMax(cmin, cmax);
+	setMinAndMax(maxi, cmax);
 }
 
 function singleQuickContrast() {
@@ -224,14 +239,14 @@ function singleQuickContrast() {
 	setMinAndMax(mean-stdev*3, mean+stdev*3);
 	//Do fluorescent channel auto contrast
 	setSlice(dnaslice);
-	fluorescenceAutocontrast();
+	fluorescenceAutocontrastMode();
 	if (greenslice!=-1) {
 		setSlice(greenslice);
-		fluorescenceAutocontrast();
+		fluorescenceAutocontrastMode();
 	}
 	if (redslice!=-1) {
 		setSlice(redslice);
-		fluorescenceAutocontrast();
+		fluorescenceAutocontrastMode();
 	}
 	//Restore original selection
 	run("Select None");

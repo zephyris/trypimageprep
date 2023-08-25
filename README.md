@@ -39,7 +39,7 @@ Applies a simple autocontrast function to a single image.
 ## Quick contrast
 Applies a simple autocontrast function to all open images.
 
-Fluorescence channels are set to display image mean (ie. approximately background) to the 1st percentile of signal. Phase contrast is set to display the mean plus and minus three times the standard deviation.
+Fluorescence channels are set to display image mode (ie. approximately background) to the 1st percentile of signal. Phase contrast is set to display the mean plus and minus three times the standard deviation.
 
 ## Save All To Directory and Close
 Keyboard shortcut: `A`
