@@ -1,5 +1,7 @@
 # Tryp Image Prep
-ImageJ macros assisting trypanosomatid cell microscopy image prep.
+# ![crop](https://github.com/zephyris/trypimageprep/assets/2762690/e50e8a9a-0f03-45f7-9852-7af66c861b8b)
+
+**ImageJ macros assisting trypanosomatid cell microscopy image prep.**
 
 **Quickstart**: Download [tryp_cell_image_prep.ijm](https://raw.githubusercontent.com/zephyris/trypimageprep/main/tryp_cell_image_prep.ijm) and install in ImageJ, then look for the new entries in the `Macros` menu.
 
