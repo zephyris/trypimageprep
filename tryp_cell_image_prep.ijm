@@ -127,6 +127,56 @@ macro "Cell Cropper Settings" {
 	h=Dialog.getNumber();
 }
 
+macro "---- [does something to the current image] ----" {
+}
+
+//Flip vertically
+macro "Flip vertically [v]" {
+	seltype="none";
+	if (selectionType()==0) {
+		seltype="rectangle";
+		getSelectionBounds(x, y, w, h);
+	} else if (selectionType()==2) {
+		seltype="polygon";
+		getSelectionCoordinates(x, y);
+	} else if (selectionType()==5) {
+		seltype="line";
+		getSelectionCoordinates(x, y);
+	} else if (selectionType()==6) {
+		seltype="polyline";
+		getSelectionCoordinates(x, y);
+	} else if (selectionType()==10) {
+		seltype="point";
+		getSelectionCoordinates(x, y);
+	}
+	run("Select None");
+	run("Flip Vertically");
+	if (seltype=="rectangle") {
+		makeRectangle(x, getHeight()-(y+h), w, h);
+	} else if (seltype!="none") {
+		nx=newArray(lengthOf(x));
+		ny=newArray(lengthOf(y));
+		for (i=0; i<lengthOf(x); i++) {
+			ny[i]=getHeight()-y[i];
+			nx[i]=x[i];
+		}
+		if (seltype=="polygon") {
+			makeSelection("polygon", nx, ny);
+		} else if (seltype=="line") {
+			makeSelection("line", nx, ny);
+		} else if (seltype=="polyline") {
+			makeSelection("polyline", nx, ny);
+		} else if (seltype=="point") {
+			makeSelection("point", nx, ny);
+		}
+	}
+}
+
+//Single image quick contrast
+macro "Single image quick contrast" {
+	singleQuickContrast();
+}
+
 macro "---- [does something to all open images] ----" {
 }
 
@@ -138,67 +188,75 @@ function fluorescenceAutocontrast() {
 	setMinAndMax(mean, cmax);
 }
 
+function singleQuickContrast() {
+	//Check initialisation
+	if (channelsinitialised==false) {
+		getImageChannelSettings();
+	}
+	//Record image selection to restore later
+	if (is("composite")==false) {
+		run("Stack to Hyperstack...", "order=xyczt(default) channels="+nSlices()+" slices=1 frames=1 display=Color");
+	}
+	seltype="none";
+	if (selectionType()==0) {
+		seltype="rectangle";
+		getSelectionBounds(x, y, w, h);
+	} else if (selectionType()==2) {
+		seltype="polygon";
+		getSelectionCoordinates(x, y);
+	} else if (selectionType()==5) {
+		seltype="line";
+		getSelectionCoordinates(x, y);
+	} else if (selectionType()==6) {
+		seltype="polyline";
+		getSelectionCoordinates(x, y);
+	} else if (selectionType()==10) {
+		seltype="point";
+		getSelectionCoordinates(x, y);
+	}
+	//Do contrast on centre region of image
+	makeRectangle(getWidth()/4, getHeight/4, getWidth()/2, getHeight()/2);
+	Stack.setDisplayMode("composite");
+	//Do phase autocontrast
+	setSlice(phaseslice);
+	run("Grays");
+	getRawStatistics(area, mean, min, max, stdev);
+	setMinAndMax(mean-stdev*3, mean+stdev*3);
+	//Do fluorescent channel auto contrast
+	setSlice(dnaslice);
+	fluorescenceAutocontrast();
+	if (greenslice!=-1) {
+		setSlice(greenslice);
+		fluorescenceAutocontrast();
+	}
+	if (redslice!=-1) {
+		setSlice(redslice);
+		fluorescenceAutocontrast();
+	}
+	//Restore original selection
+	run("Select None");
+	if (seltype=="rectangle") {
+		makeRectangle(x, y, w, h);
+	} else if (seltype=="polygon") {
+		makeSelection(seltype, x, y);
+	} else if (seltype=="line") {
+		makeLine(x[0], y[0], x[1], y[1]);
+	} else if (seltype=="polyline") {
+		makeSelection(seltype, x, y);
+	} else if (seltype=="point") {
+		if (lengthOf(x)==1) {
+			makePoint(x[0], y[0]);
+		} else {
+			makeSelection("points", x, y);
+		}
+	}
+	setSlice(2);
+}
+
 function quickContrast() {
 	for (i=0; i<nImages(); i++) {
 		selectImage(i+1);
-		//Record image selection to restore later
-		if (is("composite")==false) {
-			run("Stack to Hyperstack...", "order=xyczt(default) channels="+nSlices()+" slices=1 frames=1 display=Color");
-		}
-		seltype="none";
-		if (selectionType()==1) {
-			seltype="rectangle";
-			getSelectionBounds(x, y, w, h);
-		} else if (selectionType()==2) {
-			seltype="polygon";
-			getSelectionCoordinates(x, y);
-		} else if (selectionType()==5) {
-			seltype="line";
-			getSelectionCoordinates(x, y);
-		} else if (selectionType()==6) {
-			seltype="polyline";
-			getSelectionCoordinates(x, y);
-		} else if (selectionType()==10) {
-			seltype="point";
-			getSelectionCoordinates(x, y);
-		}
-		//Do contrast on centre region of image
-		makeRectangle(getWidth()/4, getHeight/4, getWidth()/2, getHeight()/2);
-		Stack.setDisplayMode("composite");
-		//Do phase autocontrast
-		setSlice(phaseslice);
-		run("Grays");
-		getRawStatistics(area, mean, min, max, stdev);
-		setMinAndMax(mean-stdev*3, mean+stdev*3);
-		//Do fluorescent channel auto contrast
-		setSlice(dnaslice);
-		fluorescenceAutocontrast();
-		if (greenslice!=-1) {
-			setSlice(greenslice);
-			fluorescenceAutocontrast();
-		}
-		if (redslice!=-1) {
-			setSlice(redslice);
-			fluorescenceAutocontrast();
-		}
-		//Restore original selection
-		run("Select None");
-		if (seltype=="rectangle") {
-			makeRectangle(x, y, w, h);
-		} else if (seltype=="polygon") {
-			makeSelection(seltype, x, y);
-		} else if (seltype=="line") {
-			makeLine(x[0], y[0], x[1], y[1]);
-		} else if (seltype=="polyline") {
-			makeSelection(seltype, x, y);
-		} else if (seltype=="point") {
-			if (lengthOf(x)==1) {
-				makePoint(x[0], y[0]);
-			} else {
-				makeSelection("points", x, y);
-			}
-		}
-		setSlice(2);
+		singleQuickContrast();
 	}
 }
 
