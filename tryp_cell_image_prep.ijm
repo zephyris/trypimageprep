@@ -182,7 +182,6 @@ macro "---- [does something to all open images] ----" {
 
 //Quick contrast
 function fluorescenceAutocontrast() {
-	setLut();
 	getRawStatistics(area, mean, min, max);
 	run("Enhance Contrast", "saturated=0.01");
 	getMinAndMax(cmin, cmax);
@@ -209,6 +208,7 @@ function singleQuickContrast() {
 	if (channelsinitialised==false) {
 		getImageChannelSettings();
 	}
+	setLut();
 	//Record image selection to restore later
 	if (is("composite")==false) {
 		run("Stack to Hyperstack...", "order=xyczt(default) channels="+nSlices()+" slices=1 frames=1 display=Color");
