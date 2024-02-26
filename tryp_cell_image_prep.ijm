@@ -574,11 +574,11 @@ macro "Generate Detail Insets [d]" {
 macro "Generate Detail Insets Settings" {
 	Dialog.create("Inset Images Settings");
 	Dialog.addMessage("Square insets from point selections:");
-	Dialog.getNumber("Sampled width (px):", squareSampleWidth);
-	Dialog.getNumber("Zoom factor:", squareZoomFactor);
+	Dialog.addNumber("Sampled width (px):", squareSampleWidth);
+	Dialog.addNumber("Zoom factor:", squareZoomFactor);
 	Dialog.addMessage("Rectangle insets from line selections:");
-	Dialog.getNumber("Sampled width (px):", lineSampleWidth);
-	Dialog.getNumber("Zoom factor:", lineZoomFactor);
+	Dialog.addNumber("Sampled width (px):", lineSampleWidth);
+	Dialog.addNumber("Zoom factor:", lineZoomFactor);
 	Dialog.show();
 	squareSampleWidth=Dialog.getNumber();
 	squareZoomFactor=Dialog.getNumber();
