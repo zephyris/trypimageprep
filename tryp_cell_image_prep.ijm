@@ -234,13 +234,17 @@ function singleQuickContrast() {
 	makeRectangle(getWidth()/4, getHeight/4, getWidth()/2, getHeight()/2);
 	Stack.setDisplayMode("composite");
 	//Do phase autocontrast
-	setSlice(phaseslice);
-	run("Grays");
+	if (phaseslice!=-1) {
+		setSlice(phaseslice);
+		run("Grays");
+	}
 	getRawStatistics(area, mean, min, max, stdev);
 	setMinAndMax(mean-stdev*3, mean+stdev*3);
 	//Do fluorescent channel auto contrast
-	setSlice(dnaslice);
-	fluorescenceAutocontrastMode();
+	if (dnaslice!=-1) {
+		setSlice(dnaslice);
+		fluorescenceAutocontrastMode();
+	}
 	if (greenslice!=-1) {
 		setSlice(greenslice);
 		fluorescenceAutocontrastMode();
