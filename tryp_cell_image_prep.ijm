@@ -437,22 +437,11 @@ function makeComposite() {
 	return tgt;
 }
 
-//Process all images saved in a directory and make composite views
-macro "Make Montages [m]" {
-	//Check initialisation
-	if (channelsinitialised==false) {
-		getImageChannelSettings();
-	}
-	if (montagesinitialised==false) {
-		makeMontagesSettings();
-	}
-	//Recurse through directories to make composites
-	recursive=true;
-	path=getDirectory("");
+function recursiveMontage(path, recursive) {
 	files=getFileList(path);
 	for (i=0; i<lengthOf(files); i++) {
 		if (File.isDirectory(path+files[i])==true && recursive==true) {
-			processFolder(path+files[i], recursive);
+			recursiveMontage(path+files[i], recursive);
 		} else if (endsWith(files[i], ".tif")==true) {
 			//Open, make composite and save
 			open(path+files[i]);
@@ -466,6 +455,21 @@ macro "Make Montages [m]" {
 			close();
 		}
 	}
+}
+
+//Process all images saved in a directory and make composite views
+macro "Make Montages [m]" {
+	//Check initialisation
+	if (channelsinitialised==false) {
+		getImageChannelSettings();
+	}
+	if (montagesinitialised==false) {
+		makeMontagesSettings();
+	}
+	//Recurse through directories to make composites
+	recursive=true;
+	path=getDirectory("");
+	recursiveMontage(path, recursive)
 }
 
 
